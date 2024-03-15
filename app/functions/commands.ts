@@ -7,10 +7,11 @@
  * @license: MIT License
  *
  */
-import bot from "@app/functions/telegraf";
+import { bot } from "@app/functions/actions";
 import * as databases from "@app/functions/databases";
 import config from "@configs/config";
 import { launchPolling, launchWebhook } from "./launcher";
+import { Markup } from "telegraf";
 
 /**
  * command: /quit
@@ -46,8 +47,11 @@ const sendPhoto = async (): Promise<void> => {
 const start = async (): Promise<void> => {
 	bot.start((ctx) => {
 		databases.writeUser(ctx.update.message.from);
-
-		ctx.telegram.sendMessage(ctx.message.chat.id, `Welcome! Try send /photo command or write any text`);
+		const btnMarkup = Markup.inlineKeyboard([Markup.button.callback("Send Token", "send_token")]);
+		ctx.telegram.sendMessage(ctx.message.chat.id, `Welcome! Try send /photo command or write any text`, {
+			reply_markup: btnMarkup.reply_markup,
+			parse_mode: "HTML",
+		});
 	});
 };
 

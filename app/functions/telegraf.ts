@@ -7,10 +7,24 @@
  * @license: MIT License
  *
  */
-import { Telegraf } from "telegraf";
+import { Context, Scenes, Telegraf } from "telegraf";
 import configs from "@configs/config";
 
-const bot = new Telegraf(configs.telegram.token);
+interface MyWizardSession extends Scenes.WizardSessionData {
+	store: {
+		sol_transaction: {
+			wallet_address: string;
+			amount_to_send: string;
+		};
+	};
+}
 
-export { bot };
+interface WizardContext extends Context {
+	scene: Scenes.SceneContextScene<WizardContext, MyWizardSession>;
+	wizard: Scenes.WizardContextWizard<WizardContext>;
+}
+
+const bot = new Telegraf<WizardContext>(configs.telegram.token);
+
+export { WizardContext };
 export default bot;
